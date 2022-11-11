@@ -46,21 +46,12 @@ const getUsers = async () => {
     (response) => response.text()
   );
 
-  const filteredData = usersFile
+  const filteredUsers = usersFile
     .split("\n\n")
-    .filter((x) => x.trim().length > 0);
+    .map((userLine) => userLine.replaceAll("\n", " ").split(" "));
 
-  const usersLines = filteredData.map((data) => {
-    const lines = data.trim().split("\n");
-    return lines.reduce((acc, current) => acc + ` ${current}`);
-  });
-
-  const usersLinesArray = usersLines.map((user) => user.trim().split(" "));
-
-  const users = [];
-
-  usersLinesArray.forEach((usersArray) => {
-    const result = usersArray.reduce((acc, current) => {
+  const formattedUsers = filteredUsers.map((usersArray) => {
+    return usersArray.reduce((acc, current) => {
       const properties = current.split(":");
 
       return {
@@ -68,11 +59,9 @@ const getUsers = async () => {
         [properties[0]]: properties[1],
       };
     }, {});
-
-    users.push(result);
   });
 
-  return users;
+  return formattedUsers.filter((user) => isValidUser(user));
 };
 
 const isValidUser = (user) => {
@@ -86,11 +75,9 @@ const isValidUser = (user) => {
 (async () => {
   const users = await getUsers();
 
-  const validUsers = users.filter((x) => isValidUser(x));
-
   console.log(
     "\x1b[36m%s\x1b[33m",
     "Codember Challenge #1 answer:",
-    `submit ${validUsers.length}${validUsers[validUsers.length - 1].usr}`
+    `submit ${users.length}${users[users.length - 1].usr}`
   );
 })();
