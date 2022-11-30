@@ -15,7 +15,7 @@ const getEncryptedMessage = async () => {
       let currentASCIICode = [];
       if (codes[0] == 1) {
         currentASCIICode = codes.splice(0, 3);
-      } else if (codes[0] == 9) {
+      } else if (codes[0] >= 4 && codes[0] <= 9) {
         currentASCIICode = codes.splice(0, 2);
       }
 
